@@ -392,7 +392,7 @@
             "dist": {
                 "type": "path",
                 "url": "../contracts",
-                "reference": "99db10f4492be568820fa291d57a51d54d8eb1fb"
+                "reference": "d4dfcfa5bd7a7850946ea05453147c7176dcb6e0"
             },
             "require": {
                 "php": "^8.5",
@@ -401,6 +401,7 @@
                 "psr/event-dispatcher": "^1.0",
                 "psr/http-message": "^1.1 || ^2.0",
                 "psr/http-server-handler": "^1.0",
+                "psr/http-server-middleware": "^1.0",
                 "psr/log": "^3.0"
             },
             "require-dev": {
