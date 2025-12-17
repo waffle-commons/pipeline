@@ -84,7 +84,7 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
         $middleware = new CoreRoutingMiddleware($router);
         $result = $middleware->process($request, $handler);
 
-        $this->assertSame($response, $result);
+        static::assertSame($response, $result);
     }
 
     public function testItHandlesRouteWithoutOptionalParams(): void
@@ -100,7 +100,7 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
             Constant::ARGUMENTS => [],
             Constant::PATH => '/',
             Constant::NAME => 'home',
-            // No params
+            Constant::PARAMS => null,
         ];
 
         $router = $this->createMock(RouterInterface::class);

@@ -23,9 +23,9 @@ final class MiddlewareStackTest extends AbstractTestCase
 
         $middlewares = $stack->getMiddlewares();
 
-        $this->assertCount(2, $middlewares);
-        $this->assertSame($middleware1, $middlewares[0]);
-        $this->assertSame($middleware2, $middlewares[1]);
+        static::assertCount(2, $middlewares);
+        static::assertSame($middleware1, $middlewares[0]);
+        static::assertSame($middleware2, $middlewares[1]);
     }
 
     public function testPrependAddsMiddlewareToBeginning(): void
@@ -41,9 +41,9 @@ final class MiddlewareStackTest extends AbstractTestCase
 
         $middlewares = $stack->getMiddlewares();
 
-        $this->assertCount(2, $middlewares);
-        $this->assertSame($middleware2, $middlewares[0], 'Prepended middleware should be first');
-        $this->assertSame($middleware1, $middlewares[1], 'Original middleware should be second');
+        static::assertCount(2, $middlewares);
+        static::assertSame($middleware2, $middlewares[0], 'Prepended middleware should be first');
+        static::assertSame($middleware1, $middlewares[1], 'Original middleware should be second');
     }
 
     public function testFluentInterface(): void
@@ -54,8 +54,8 @@ final class MiddlewareStackTest extends AbstractTestCase
         $resultAdd = $stack->add($middleware);
         $resultPrepend = $stack->prepend($middleware);
 
-        $this->assertSame($stack, $resultAdd);
-        $this->assertSame($stack, $resultPrepend);
+        static::assertSame($stack, $resultAdd);
+        static::assertSame($stack, $resultPrepend);
     }
 
     public function testCreateHandlerReturnsConfiguredRequestHandler(): void
@@ -69,6 +69,6 @@ final class MiddlewareStackTest extends AbstractTestCase
         $handler = $stack->createHandler($fallbackHandler);
 
         // We verify that the factory method returns the correct concrete implementation
-        $this->assertInstanceOf(RequestHandler::class, $handler);
+        static::assertInstanceOf(RequestHandler::class, $handler);
     }
 }

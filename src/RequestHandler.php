@@ -26,6 +26,7 @@ final readonly class RequestHandler implements RequestHandlerInterface
         private RequestHandlerInterface $fallbackHandler,
     ) {}
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         // 1. If the stack is empty, we have traversed all middlewares.

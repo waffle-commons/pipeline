@@ -28,6 +28,7 @@ final class RequestHandlerTest extends AbstractTestCase
                 private array &$log,
             ) {}
 
+            #[\Override]
             public function process(
                 ServerRequestInterface $request,
                 RequestHandlerInterface $handler,
@@ -44,6 +45,7 @@ final class RequestHandlerTest extends AbstractTestCase
                 private array &$log,
             ) {}
 
+            #[\Override]
             public function process(
                 ServerRequestInterface $request,
                 RequestHandlerInterface $handler,
@@ -58,8 +60,8 @@ final class RequestHandlerTest extends AbstractTestCase
         $handler = new RequestHandler([$middleware1, $middleware2], $fallback);
         $result = $handler->handle($request);
 
-        $this->assertSame($response, $result);
-        $this->assertSame(['M1-In', 'M2-In', 'M2-Out', 'M1-Out'], $log);
+        static::assertSame($response, $result);
+        static::assertSame(['M1-In', 'M2-In', 'M2-Out', 'M1-Out'], $log);
     }
 
     public function testMiddlewareCanShortCircuitThePipeline(): void
@@ -80,7 +82,7 @@ final class RequestHandlerTest extends AbstractTestCase
         $handler = new RequestHandler([$shortCircuitMiddleware, $secondMiddleware], $fallback);
         $result = $handler->handle($request);
 
-        $this->assertSame($expectedResponse, $result);
+        static::assertSame($expectedResponse, $result);
     }
 
     public function testHandlerIsImmutableAndReusable(): void
@@ -96,9 +98,7 @@ final class RequestHandlerTest extends AbstractTestCase
         $middleware
             ->expects($this->exactly(2))
             ->method('process')
-            ->willReturnCallback(function ($req, $next) {
-                return $next->handle($req);
-            });
+            ->willReturnCallback(static fn($req, $next) => $next->handle($req));
 
         $handler = new RequestHandler([$middleware], $fallback);
 
