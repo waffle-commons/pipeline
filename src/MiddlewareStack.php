@@ -42,5 +42,4 @@ final class MiddlewareStack implements MiddlewareStackInterface
         // This is the implementation detail hidden from the Core.
         return new RequestHandler($this->middlewares, $fallbackHandler);
     }
-
 }

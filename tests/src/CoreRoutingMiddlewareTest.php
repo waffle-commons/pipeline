@@ -35,10 +35,7 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
 
         // 3. Configure Router Expectation using the Mock
         $router = $this->createMock(RouterInterface::class);
-        $router->expects($this->once())
-            ->method('matchRequest')
-            ->with($request)
-            ->willReturn($routeMatch);
+        $router->expects($this->once())->method('matchRequest')->with($request)->willReturn($routeMatch);
 
         // 4. Configure Request Immutability Chain (Mocking the fluent interface)
         $req1 = $this->createMock(ServerRequestInterface::class);
@@ -48,19 +45,40 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
         $req5 = $this->createMock(ServerRequestInterface::class);
         $req6 = $this->createMock(ServerRequestInterface::class);
 
-        $request->expects($this->once())->method('withAttribute')->with('_classname', $routeMatch[Constant::CLASSNAME])->willReturn($req1);
-        $req1->expects($this->once())->method('withAttribute')->with('_method', $routeMatch[Constant::METHOD])->willReturn($req2);
-        $req2->expects($this->once())->method('withAttribute')->with('_arguments', $routeMatch[Constant::ARGUMENTS])->willReturn($req3);
-        $req3->expects($this->once())->method('withAttribute')->with('_path', $routeMatch[Constant::PATH])->willReturn($req4);
-        $req4->expects($this->once())->method('withAttribute')->with('_name', $routeMatch[Constant::NAME])->willReturn($req5);
-        $req5->expects($this->once())->method('withAttribute')->with('_params', $routeMatch[Constant::PARAMS])->willReturn($req6);
+        $request
+            ->expects($this->once())
+            ->method('withAttribute')
+            ->with('_classname', $routeMatch[Constant::CLASSNAME])
+            ->willReturn($req1);
+        $req1
+            ->expects($this->once())
+            ->method('withAttribute')
+            ->with('_method', $routeMatch[Constant::METHOD])
+            ->willReturn($req2);
+        $req2
+            ->expects($this->once())
+            ->method('withAttribute')
+            ->with('_arguments', $routeMatch[Constant::ARGUMENTS])
+            ->willReturn($req3);
+        $req3
+            ->expects($this->once())
+            ->method('withAttribute')
+            ->with('_path', $routeMatch[Constant::PATH])
+            ->willReturn($req4);
+        $req4
+            ->expects($this->once())
+            ->method('withAttribute')
+            ->with('_name', $routeMatch[Constant::NAME])
+            ->willReturn($req5);
+        $req5
+            ->expects($this->once())
+            ->method('withAttribute')
+            ->with('_params', $routeMatch[Constant::PARAMS])
+            ->willReturn($req6);
 
         // 5. Configure Handler to receive the final enriched request
         $handler = $this->createMock(RequestHandlerInterface::class);
-        $handler->expects($this->once())
-            ->method('handle')
-            ->with($req6)
-            ->willReturn($response);
+        $handler->expects($this->once())->method('handle')->with($req6)->willReturn($response);
 
         // 6. Execute
         $middleware = new CoreRoutingMiddleware($router);
@@ -135,10 +153,7 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
         $req3->method('withAttribute')->willReturn($req4);
         $req4->method('withAttribute')->willReturn($req5);
 
-        $req5->expects($this->once())
-            ->method('withAttribute')
-            ->with('_params', [])
-            ->willReturn($req6);
+        $req5->expects($this->once())->method('withAttribute')->with('_params', [])->willReturn($req6);
 
         $handler = $this->createMock(RequestHandlerInterface::class);
         $handler->method('handle')->willReturn($response);
@@ -157,9 +172,7 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
         // We create an anonymous class that extends RuntimeException and implements the interface.
         $exception = new class extends RuntimeException implements RouteNotFoundExceptionInterface {};
 
-        $router->expects($this->once())
-            ->method('matchRequest')
-            ->willThrowException($exception);
+        $router->expects($this->once())->method('matchRequest')->willThrowException($exception);
 
         $middleware = new CoreRoutingMiddleware($router);
 
@@ -175,10 +188,7 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
         $router = $this->createMock(RouterInterface::class);
 
         // Simulate Router returning null (no match found)
-        $router->expects($this->once())
-            ->method('matchRequest')
-            ->with($request)
-            ->willReturn(null);
+        $router->expects($this->once())->method('matchRequest')->with($request)->willReturn(null);
 
         $middleware = new CoreRoutingMiddleware($router);
 

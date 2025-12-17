@@ -19,15 +19,19 @@ final class RequestHandlerTest extends AbstractTestCase
         $response = $this->createStub(ResponseInterface::class);
 
         $fallback = $this->createMock(RequestHandlerInterface::class);
-        $fallback->expects($this->once())
-            ->method('handle')
-            ->willReturn($response);
+        $fallback->expects($this->once())->method('handle')->willReturn($response);
 
         $log = [];
 
         $middleware1 = new class($log) implements MiddlewareInterface {
-            public function __construct(private array &$log) {}
-            public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function __construct(
+                private array &$log,
+            ) {}
+
+            public function process(
+                ServerRequestInterface $request,
+                RequestHandlerInterface $handler,
+            ): ResponseInterface {
                 $this->log[] = 'M1-In';
                 $response = $handler->handle($request);
                 $this->log[] = 'M1-Out';
@@ -36,8 +40,14 @@ final class RequestHandlerTest extends AbstractTestCase
         };
 
         $middleware2 = new class($log) implements MiddlewareInterface {
-            public function __construct(private array &$log) {}
-            public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+            public function __construct(
+                private array &$log,
+            ) {}
+
+            public function process(
+                ServerRequestInterface $request,
+                RequestHandlerInterface $handler,
+            ): ResponseInterface {
                 $this->log[] = 'M2-In';
                 $response = $handler->handle($request);
                 $this->log[] = 'M2-Out';
@@ -62,9 +72,7 @@ final class RequestHandlerTest extends AbstractTestCase
         $fallback->expects($this->never())->method('handle');
 
         $shortCircuitMiddleware = $this->createMock(MiddlewareInterface::class);
-        $shortCircuitMiddleware->expects($this->once())
-            ->method('process')
-            ->willReturn($expectedResponse);
+        $shortCircuitMiddleware->expects($this->once())->method('process')->willReturn($expectedResponse);
 
         $secondMiddleware = $this->createMock(MiddlewareInterface::class);
         $secondMiddleware->expects($this->never())->method('process');
@@ -82,12 +90,11 @@ final class RequestHandlerTest extends AbstractTestCase
 
         // Fallback should be called TWICE because we run the handler twice
         $fallback = $this->createMock(RequestHandlerInterface::class);
-        $fallback->expects($this->exactly(2))
-            ->method('handle')
-            ->willReturn($response);
+        $fallback->expects($this->exactly(2))->method('handle')->willReturn($response);
 
         $middleware = $this->createMock(MiddlewareInterface::class);
-        $middleware->expects($this->exactly(2))
+        $middleware
+            ->expects($this->exactly(2))
             ->method('process')
             ->willReturnCallback(function ($req, $next) {
                 return $next->handle($req);

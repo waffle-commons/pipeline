@@ -10,8 +10,8 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 use Waffle\Commons\Contracts\Constant\Constant;
-use Waffle\Commons\Contracts\Routing\RouterInterface;
 use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface;
+use Waffle\Commons\Contracts\Routing\RouterInterface;
 
 /**
  * Middleware responsible for matching the HTTP request to a route.
@@ -19,7 +19,7 @@ use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface;
 final readonly class CoreRoutingMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        private RouterInterface $router
+        private RouterInterface $router,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -37,9 +37,7 @@ final readonly class CoreRoutingMiddleware implements MiddlewareInterface
                 ->withAttribute('_arguments', $match[Constant::ARGUMENTS] ?? [])
                 ->withAttribute('_path', $match[Constant::PATH] ?? null)
                 ->withAttribute('_name', $match[Constant::NAME] ?? null)
-                ->withAttribute('_params', $match[Constant::PARAMS] ?? [])
-            ;
-
+                ->withAttribute('_params', $match[Constant::PARAMS] ?? []);
         } catch (RuntimeException|RouteNotFoundExceptionInterface $e) {
             // We let the exception bubble up. It will be caught by the ErrorHandler middleware (404).
             throw $e;

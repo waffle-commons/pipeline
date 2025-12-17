@@ -23,7 +23,7 @@ final readonly class RequestHandler implements RequestHandlerInterface
      */
     public function __construct(
         private array $middlewareQueue,
-        private RequestHandlerInterface $fallbackHandler
+        private RequestHandlerInterface $fallbackHandler,
     ) {}
 
     public function handle(ServerRequestInterface $request): ResponseInterface
