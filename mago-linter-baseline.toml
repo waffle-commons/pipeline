@@ -1,0 +1,7 @@
+variant = "loose"
+
+[[issues]]
+file = "src/RequestHandler.php"
+code = "no-empty"
+message = "Use of the `empty` construct."
+count = 1

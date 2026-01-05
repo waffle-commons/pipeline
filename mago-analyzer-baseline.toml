@@ -1,0 +1,325 @@
+variant = "loose"
+
+[[issues]]
+file = "src/CoreRoutingMiddleware.php"
+code = "invalid-throw"
+message = 'Cannot throw type `Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface` because it is not an instance of Throwable.'
+count = 1
+
+[[issues]]
+file = "src/CoreRoutingMiddleware.php"
+code = "possibly-undefined-string-array-index"
+message = "Possibly undefined array key 'params' accessed on `array{'arguments': array<string, mixed>, 'classname': class-string, 'method': string, 'name': truthy-string, 'params'?: array<string, mixed>, 'path': string}`."
+count = 1
+
+[[issues]]
+file = "src/CoreRoutingMiddleware.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `RuntimeException` in `Waffle\Commons\Pipeline\CoreRoutingMiddleware::process`.'
+count = 1
+
+[[issues]]
+file = "src/MiddlewareStack.php"
+code = "less-specific-argument"
+message = 'Argument type mismatch for argument #1 of `waffle\commons\pipeline\requesthandler::__construct`: expected `array<int, Psr\Http\Server\MiddlewareInterface>`, but provided type `array<array-key, Psr\Http\Server\MiddlewareInterface>` is less specific.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "invalid-argument"
+message = '''Invalid argument type for argument #1 of `phpunit\framework\testcase::expectexception`: expected `class-string<Throwable>`, but found `class-string('Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface')`.'''
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Event\NoPreviousThrowableException` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItBubblesExceptionWhenRouteNotFound`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Event\NoPreviousThrowableException` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItHandlesRouteWithoutOptionalParams`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Event\NoPreviousThrowableException` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItMatchesRouteAndEnrichesRequest`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Event\NoPreviousThrowableException` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItThrowsRuntimeExceptionWhenRouterReturnsNull`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\ExpectationFailedException` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItMatchesRouteAndEnrichesRequest`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\InvalidArgumentException` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItBubblesExceptionWhenRouteNotFound`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\InvalidArgumentException` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItHandlesRouteWithoutOptionalParams`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\InvalidArgumentException` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItMatchesRouteAndEnrichesRequest`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\InvalidArgumentException` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItThrowsRuntimeExceptionWhenRouterReturnsNull`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\MockObject\Exception` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItBubblesExceptionWhenRouteNotFound`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\MockObject\Exception` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItHandlesRouteWithoutOptionalParams`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\MockObject\Exception` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItMatchesRouteAndEnrichesRequest`.'
+count = 1
+
+[[issues]]
+file = "tests/src/CoreRoutingMiddlewareTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\MockObject\Exception` in `WaffleTests\Commons\Pipeline\CoreRoutingMiddlewareTest::testItThrowsRuntimeExceptionWhenRouterReturnsNull`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "possibly-undefined-array-index"
+message = 'Possibly undefined array key `int(0)` accessed on `array<array-key, Psr\Http\Server\MiddlewareInterface>`.'
+count = 2
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "possibly-undefined-array-index"
+message = 'Possibly undefined array key `int(1)` accessed on `array<array-key, Psr\Http\Server\MiddlewareInterface>`.'
+count = 2
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Event\NoPreviousThrowableException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testAddAppendsMiddlewareToEnd`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Event\NoPreviousThrowableException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testCreateHandlerReturnsConfiguredRequestHandler`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Event\NoPreviousThrowableException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testFluentInterface`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Event\NoPreviousThrowableException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testPrependAddsMiddlewareToBeginning`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\Exception` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testAddAppendsMiddlewareToEnd`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\Exception` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testCreateHandlerReturnsConfiguredRequestHandler`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\Exception` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testPrependAddsMiddlewareToBeginning`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\ExpectationFailedException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testAddAppendsMiddlewareToEnd`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\ExpectationFailedException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testCreateHandlerReturnsConfiguredRequestHandler`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\ExpectationFailedException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testFluentInterface`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\ExpectationFailedException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testPrependAddsMiddlewareToBeginning`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\GeneratorNotSupportedException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testAddAppendsMiddlewareToEnd`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\GeneratorNotSupportedException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testPrependAddsMiddlewareToBeginning`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\InvalidArgumentException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testAddAppendsMiddlewareToEnd`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\InvalidArgumentException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testCreateHandlerReturnsConfiguredRequestHandler`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\InvalidArgumentException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testFluentInterface`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\InvalidArgumentException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testPrependAddsMiddlewareToBeginning`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\MockObject\Exception` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testAddAppendsMiddlewareToEnd`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\MockObject\Exception` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testCreateHandlerReturnsConfiguredRequestHandler`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\MockObject\Exception` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testFluentInterface`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\MockObject\Exception` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testPrependAddsMiddlewareToBeginning`.'
+count = 1
+
+[[issues]]
+file = "tests/src/MiddlewareStackTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\UnknownClassOrInterfaceException` in `Waffle\Commons\Pipeline\Tests\MiddlewareStackTest::testCreateHandlerReturnsConfiguredRequestHandler`.'
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "mixed-method-access"
+message = "Attempting to access a method on a non-object type (`mixed`)."
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Event\NoPreviousThrowableException` in `Waffle\Commons\Pipeline\Tests\RequestHandlerTest::testHandlerIsImmutableAndReusable`.'
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Event\NoPreviousThrowableException` in `Waffle\Commons\Pipeline\Tests\RequestHandlerTest::testItExecutesMiddlewareStackInOrder`.'
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Event\NoPreviousThrowableException` in `Waffle\Commons\Pipeline\Tests\RequestHandlerTest::testMiddlewareCanShortCircuitThePipeline`.'
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\ExpectationFailedException` in `Waffle\Commons\Pipeline\Tests\RequestHandlerTest::testItExecutesMiddlewareStackInOrder`.'
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\ExpectationFailedException` in `Waffle\Commons\Pipeline\Tests\RequestHandlerTest::testMiddlewareCanShortCircuitThePipeline`.'
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\InvalidArgumentException` in `Waffle\Commons\Pipeline\Tests\RequestHandlerTest::testHandlerIsImmutableAndReusable`.'
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\InvalidArgumentException` in `Waffle\Commons\Pipeline\Tests\RequestHandlerTest::testItExecutesMiddlewareStackInOrder`.'
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\InvalidArgumentException` in `Waffle\Commons\Pipeline\Tests\RequestHandlerTest::testMiddlewareCanShortCircuitThePipeline`.'
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\MockObject\Exception` in `Waffle\Commons\Pipeline\Tests\RequestHandlerTest::testHandlerIsImmutableAndReusable`.'
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\MockObject\Exception` in `Waffle\Commons\Pipeline\Tests\RequestHandlerTest::testItExecutesMiddlewareStackInOrder`.'
+count = 1
+
+[[issues]]
+file = "tests/src/RequestHandlerTest.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `PHPUnit\Framework\MockObject\Exception` in `Waffle\Commons\Pipeline\Tests\RequestHandlerTest::testMiddlewareCanShortCircuitThePipeline`.'
+count = 1
