@@ -2,56 +2,14 @@ variant = "loose"
 
 [[issues]]
 file = "src/CoreRoutingMiddleware.php"
-code = "impossible-assignment"
-message = "Invalid assignment: the right-hand side has type `never` and cannot produce a value."
+code = "invalid-throw"
+message = 'Cannot throw type `Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface` because it is not an instance of Throwable.'
 count = 1
 
 [[issues]]
 file = "src/CoreRoutingMiddleware.php"
-code = "impossible-condition"
-message = "This condition (type `false`) will always evaluate to false."
-count = 1
-
-[[issues]]
-file = "src/CoreRoutingMiddleware.php"
-code = "invalid-method-access"
-message = 'Attempting to access a method on a non-object type (`unknown-ref(Waffle\Commons\Contracts\Routing\RouterInterface)`).'
-count = 1
-
-[[issues]]
-file = "src/CoreRoutingMiddleware.php"
-code = "mixed-assignment"
-message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
-count = 1
-
-[[issues]]
-file = "src/CoreRoutingMiddleware.php"
-code = "no-value"
-message = 'Argument #2 passed to method `Psr\Http\Message\ServerRequestInterface::withattribute` has type `never`, meaning it cannot produce a value.'
-count = 5
-
-[[issues]]
-file = "src/CoreRoutingMiddleware.php"
-code = "non-existent-catch-type"
-message = 'Attempting to catch an undefined class or interface: `Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface`.'
-count = 1
-
-[[issues]]
-file = "src/CoreRoutingMiddleware.php"
-code = "non-existent-class-like"
-message = 'Class, interface, enum, or trait `Waffle\Commons\Contracts\Constant\Constant` not found.'
-count = 6
-
-[[issues]]
-file = "src/CoreRoutingMiddleware.php"
-code = "redundant-comparison"
-message = "Redundant `===` comparison: left-hand side is never identical to right-hand side."
-count = 1
-
-[[issues]]
-file = "src/CoreRoutingMiddleware.php"
-code = "unevaluated-code"
-message = "Unreachable code detected."
+code = "possibly-undefined-string-array-index"
+message = "Possibly undefined array key 'params' accessed on `array{'arguments': array<string, mixed>, 'classname': class-string, 'method': string, 'name': truthy-string, 'params'?: array<string, mixed>, 'path': string}`."
 count = 1
 
 [[issues]]
@@ -62,8 +20,8 @@ count = 1
 
 [[issues]]
 file = "src/MiddlewareStack.php"
-code = "non-existent-class-like"
-message = 'Class `Waffle\Commons\Pipeline\MiddlewareStack` cannot implement unknown type `MiddlewareStackInterface`'
+code = "less-specific-argument"
+message = 'Argument type mismatch for argument #1 of `waffle\commons\pipeline\requesthandler::__construct`: expected `array<int, Psr\Http\Server\MiddlewareInterface>`, but provided type `array<array-key, Psr\Http\Server\MiddlewareInterface>` is less specific.'
 count = 1
 
 [[issues]]
@@ -71,42 +29,6 @@ file = "tests/src/CoreRoutingMiddlewareTest.php"
 code = "invalid-argument"
 message = '''Invalid argument type for argument #1 of `phpunit\framework\testcase::expectexception`: expected `class-string<Throwable>`, but found `class-string('Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface')`.'''
 count = 1
-
-[[issues]]
-file = "tests/src/CoreRoutingMiddlewareTest.php"
-code = "invalid-argument"
-message = 'Invalid argument type for argument #1 of `waffle\commons\pipeline\coreroutingmiddleware::__construct`: expected `unknown-ref(Waffle\Commons\Contracts\Routing\RouterInterface)`, but found `PHPUnit\Framework\MockObject\MockObject&Waffle\Commons\Contracts\Routing\RouterInterface`.'
-count = 4
-
-[[issues]]
-file = "tests/src/CoreRoutingMiddlewareTest.php"
-code = "mixed-method-access"
-message = "Attempting to access a method on a non-object type (`mixed`)."
-count = 9
-
-[[issues]]
-file = "tests/src/CoreRoutingMiddlewareTest.php"
-code = "no-value"
-message = 'Argument #2 passed to method `PHPUnit\Framework\MockObject\InvocationStubber::with` has type `never`, meaning it cannot produce a value.'
-count = 6
-
-[[issues]]
-file = "tests/src/CoreRoutingMiddlewareTest.php"
-code = "non-existent-class-like"
-message = "Class `class@anonymous:10703952525790376349-7861:7941` cannot implement unknown type `RouteNotFoundExceptionInterface`"
-count = 1
-
-[[issues]]
-file = "tests/src/CoreRoutingMiddlewareTest.php"
-code = "non-existent-class-like"
-message = 'Class, Interface, or Trait `Waffle\Commons\Contracts\Routing\RouterInterface` does not exist.'
-count = 8
-
-[[issues]]
-file = "tests/src/CoreRoutingMiddlewareTest.php"
-code = "non-existent-class-like"
-message = 'Class, interface, enum, or trait `Waffle\Commons\Contracts\Constant\Constant` not found.'
-count = 18
 
 [[issues]]
 file = "tests/src/CoreRoutingMiddlewareTest.php"
@@ -189,13 +111,13 @@ count = 1
 [[issues]]
 file = "tests/src/MiddlewareStackTest.php"
 code = "possibly-undefined-array-index"
-message = "Possibly undefined array key `int(0)` accessed on `array<array-key, mixed>`."
+message = 'Possibly undefined array key `int(0)` accessed on `array<array-key, Psr\Http\Server\MiddlewareInterface>`.'
 count = 2
 
 [[issues]]
 file = "tests/src/MiddlewareStackTest.php"
 code = "possibly-undefined-array-index"
-message = "Possibly undefined array key `int(1)` accessed on `array<array-key, mixed>`."
+message = 'Possibly undefined array key `int(1)` accessed on `array<array-key, Psr\Http\Server\MiddlewareInterface>`.'
 count = 2
 
 [[issues]]
