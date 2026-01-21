@@ -89,11 +89,7 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
 
     public function testItHandlesRouteWithoutOptionalParams(): void
     {
-        // FIX 1: Use createMock instead of createStub because we use ->expects() below
-        $request = $this->createMock(ServerRequestInterface::class);
-        $response = $this->createStub(ResponseInterface::class);
-
-        // Route without 'params' key
+        // 1. Setup
         $routeMatch = [
             Constant::CLASSNAME => 'TestController',
             Constant::METHOD => 'index',
@@ -106,39 +102,9 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
         $router = $this->createMock(RouterInterface::class);
         $router->method('matchRequest')->willReturn($routeMatch);
 
-        // Setup chain
-        $req1 = $this->createStub(ServerRequestInterface::class);
-        $req2 = $this->createStub(ServerRequestInterface::class);
-        $req3 = $this->createStub(ServerRequestInterface::class);
-        $req4 = $this->createStub(ServerRequestInterface::class);
-        $req5 = $this->createStub(ServerRequestInterface::class);
-        $req6 = $this->createStub(ServerRequestInterface::class);
+        $response = $this->createStub(ResponseInterface::class);
 
-        // We use method() here which works on Mocks (createMock), but allows defining return values without strict ordering if not needed
-        // But for the chain to work, the first call MUST be on $request.
-        $request->method('withAttribute')->willReturn($req1);
-        $req1->method('withAttribute')->willReturn($req2);
-        $req2->method('withAttribute')->willReturn($req3);
-        $req3->method('withAttribute')->willReturn($req4);
-        $req4->method('withAttribute')->willReturn($req5);
-
-        // Specifically check that empty array is used for missing params
-        // This expects() call was failing because $req5 was a Stub in previous logic, now it's a Stub but we check expectation on it?
-        // Wait, creating a Stub with createStub() does NOT allow expects().
-        // To fix this cleanly: We should use Mocks for the whole chain if we want to verify calls.
-        // Or simpler: Just return a new mock at the end and check arguments.
-
-        // Let's redefine the chain as Mocks to be safe for expects()
-        $req5 = $this->createMock(ServerRequestInterface::class);
-        $req4 = $this->createMock(ServerRequestInterface::class);
-        $req4->method('withAttribute')->willReturn($req5);
-        // ... (simplified back propagation) ...
-
-        // Actually, to fix "Call to undefined method ::expects()", we just need to change the creation of $req5 to createMock.
-        // But $req5 comes from $req4->withAttribute...
-
-        // LET'S SIMPLIFY:
-        // We will use createMock for EVERYTHING in this test method to allow expects().
+        // 2. Mock Chain - Use createMock to allow expects() on any link if needed
         $request = $this->createMock(ServerRequestInterface::class);
         $req1 = $this->createMock(ServerRequestInterface::class);
         $req2 = $this->createMock(ServerRequestInterface::class);
@@ -147,17 +113,21 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
         $req5 = $this->createMock(ServerRequestInterface::class);
         $req6 = $this->createMock(ServerRequestInterface::class);
 
+        // Chain configuration
         $request->method('withAttribute')->willReturn($req1);
         $req1->method('withAttribute')->willReturn($req2);
         $req2->method('withAttribute')->willReturn($req3);
         $req3->method('withAttribute')->willReturn($req4);
         $req4->method('withAttribute')->willReturn($req5);
 
+        // 3. Assertion: Ensure 'params' attribute is set to empty array []
+        // This is the critical check for this test
         $req5->expects($this->once())->method('withAttribute')->with('_params', [])->willReturn($req6);
 
         $handler = $this->createMock(RequestHandlerInterface::class);
-        $handler->method('handle')->willReturn($response);
+        $handler->method('handle')->with($req6)->willReturn($response);
 
+        // 4. Execution
         $middleware = new CoreRoutingMiddleware($router);
         $middleware->process($request, $handler);
     }
