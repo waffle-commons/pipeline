@@ -19,15 +19,27 @@ message = 'Potentially unhandled exception `RuntimeException` in `Waffle\Commons
 count = 1
 
 [[issues]]
+file = "src/Middleware/SecureHeadersMiddleware.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `InvalidArgumentException` in `Waffle\Commons\Pipeline\Middleware\SecureHeadersMiddleware::process`.'
+count = 1
+
+[[issues]]
 file = "src/MiddlewareStack.php"
 code = "less-specific-argument"
-message = 'Argument type mismatch for argument #1 of `waffle\commons\pipeline\requesthandler::__construct`: expected `array<int, Psr\Http\Server\MiddlewareInterface>`, but provided type `array<array-key, Psr\Http\Server\MiddlewareInterface>` is less specific.'
+message = 'Argument type mismatch for argument #1 of `Waffle\Commons\Pipeline\RequestHandler::__construct`: expected `array<int, Psr\Http\Server\MiddlewareInterface>`, but provided type `array<array-key, Psr\Http\Server\MiddlewareInterface>` is less specific.'
+count = 1
+
+[[issues]]
+file = "src/MiddlewareStack.php"
+code = "unhandled-thrown-type"
+message = 'Potentially unhandled exception `RuntimeException` in `Waffle\Commons\Pipeline\MiddlewareStack::ensureUnlocked`.'
 count = 1
 
 [[issues]]
 file = "tests/src/CoreRoutingMiddlewareTest.php"
 code = "invalid-argument"
-message = '''Invalid argument type for argument #1 of `phpunit\framework\testcase::expectexception`: expected `class-string<Throwable>`, but found `class-string('Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface')`.'''
+message = '''Invalid argument type for argument #1 of `PHPUnit\Framework\TestCase::expectException`: expected `class-string<Throwable>`, but found `class-string('Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface')`.'''
 count = 1
 
 [[issues]]
@@ -110,13 +122,13 @@ count = 1
 
 [[issues]]
 file = "tests/src/MiddlewareStackTest.php"
-code = "possibly-undefined-array-index"
+code = "possibly-undefined-int-array-index"
 message = 'Possibly undefined array key `int(0)` accessed on `array<array-key, Psr\Http\Server\MiddlewareInterface>`.'
 count = 2
 
 [[issues]]
 file = "tests/src/MiddlewareStackTest.php"
-code = "possibly-undefined-array-index"
+code = "possibly-undefined-int-array-index"
 message = 'Possibly undefined array key `int(1)` accessed on `array<array-key, Psr\Http\Server\MiddlewareInterface>`.'
 count = 2
 

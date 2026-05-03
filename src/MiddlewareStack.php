@@ -6,11 +6,9 @@ namespace Waffle\Commons\Pipeline;
 
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use RuntimeException;
 use Waffle\Commons\Contracts\Pipeline\MiddlewareStackInterface;
 
-/**
- * Standard implementation of the middleware stack.
- */
 final class MiddlewareStack implements MiddlewareStackInterface
 {
     /**
@@ -18,15 +16,26 @@ final class MiddlewareStack implements MiddlewareStackInterface
      */
     public private(set) array $middlewares = [];
 
-    public function add(MiddlewareInterface $middleware): self
+    private bool $locked = false;
+
+    private function ensureUnlocked(): void
     {
+        if ($this->locked) {
+            throw new RuntimeException('MiddlewareStack is locked and cannot be modified during request processing.');
+        }
+    }
+
+    public function add(MiddlewareInterface $middleware): static
+    {
+        $this->ensureUnlocked();
         $this->middlewares[] = $middleware;
 
         return $this;
     }
 
-    public function prepend(MiddlewareInterface $middleware): self
+    public function prepend(MiddlewareInterface $middleware): static
     {
+        $this->ensureUnlocked();
         array_unshift($this->middlewares, $middleware);
 
         return $this;
@@ -39,7 +48,8 @@ final class MiddlewareStack implements MiddlewareStackInterface
 
     public function createHandler(RequestHandlerInterface $fallbackHandler): RequestHandlerInterface
     {
-        // This is the implementation detail hidden from the Core.
+        $this->locked = true;
+
         return new RequestHandler($this->middlewares, $fallbackHandler);
     }
 }
