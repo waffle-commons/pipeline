@@ -31,7 +31,7 @@ final readonly class RequestHandler implements RequestHandlerInterface
     {
         // 1. If the stack is empty, we have traversed all middlewares.
         // We call the "fallback" handler (the core of the onion).
-        if (empty($this->middlewareQueue)) {
+        if ($this->middlewareQueue === []) {
             return $this->fallbackHandler->handle($request);
         }
 
