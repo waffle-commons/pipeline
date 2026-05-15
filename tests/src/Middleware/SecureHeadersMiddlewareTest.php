@@ -40,7 +40,7 @@ final class SecureHeadersMiddlewareTest extends AbstractTestCase
         $response = $this->createMock(ResponseInterface::class);
         $response
             ->method('withHeader')
-            ->willReturnCallback(function (string $name, string $value) use (
+            ->willReturnCallback(static function (string $name, string $value) use (
                 &$headerCalls,
                 $response,
             ): ResponseInterface {
