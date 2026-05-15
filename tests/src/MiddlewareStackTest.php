@@ -21,11 +21,12 @@ final class MiddlewareStackTest extends AbstractTestCase
         $stack->add($middleware1);
         $stack->add($middleware2);
 
-        $middlewares = $stack->getMiddlewares();
+        $middlewares = array_values($stack->getMiddlewares());
 
         static::assertCount(2, $middlewares);
-        static::assertSame($middleware1, $middlewares[0]);
-        static::assertSame($middleware2, $middlewares[1]);
+        [$first, $second] = $middlewares;
+        static::assertSame($middleware1, $first);
+        static::assertSame($middleware2, $second);
     }
 
     public function testPrependAddsMiddlewareToBeginning(): void
@@ -39,11 +40,12 @@ final class MiddlewareStackTest extends AbstractTestCase
         // Prepend M2 (should be before M1)
         $stack->prepend($middleware2);
 
-        $middlewares = $stack->getMiddlewares();
+        $middlewares = array_values($stack->getMiddlewares());
 
         static::assertCount(2, $middlewares);
-        static::assertSame($middleware2, $middlewares[0], 'Prepended middleware should be first');
-        static::assertSame($middleware1, $middlewares[1], 'Original middleware should be second');
+        [$first, $second] = $middlewares;
+        static::assertSame($middleware2, $first, 'Prepended middleware should be first');
+        static::assertSame($middleware1, $second, 'Original middleware should be second');
     }
 
     public function testFluentInterface(): void
