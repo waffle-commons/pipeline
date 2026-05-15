@@ -71,4 +71,26 @@ final class MiddlewareStackTest extends AbstractTestCase
         // We verify that the factory method returns the correct concrete implementation
         static::assertInstanceOf(RequestHandler::class, $handler);
     }
+
+    public function testAddAfterCreateHandlerThrows(): void
+    {
+        $stack = new MiddlewareStack();
+        $stack->createHandler($this->createStub(RequestHandlerInterface::class));
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('MiddlewareStack is locked');
+
+        $stack->add($this->createStub(MiddlewareInterface::class));
+    }
+
+    public function testPrependAfterCreateHandlerThrows(): void
+    {
+        $stack = new MiddlewareStack();
+        $stack->createHandler($this->createStub(RequestHandlerInterface::class));
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('MiddlewareStack is locked');
+
+        $stack->prepend($this->createStub(MiddlewareInterface::class));
+    }
 }
