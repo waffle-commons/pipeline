@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Waffle\Commons\Pipeline\Tests;
+namespace WaffleTests\Commons\Pipeline;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Waffle\Commons\Pipeline\RequestHandler;
-use WaffleTests\Commons\Pipeline\AbstractTestCase;
 
 final class RequestHandlerTest extends AbstractTestCase
 {
