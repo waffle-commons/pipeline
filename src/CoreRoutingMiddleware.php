@@ -32,10 +32,7 @@ final readonly class CoreRoutingMiddleware implements MiddlewareInterface
                 throw new RuntimeException('Route not found.');
             }
 
-            $params = $match[Constant::PARAMS];
-            if ($params === null) {
-                $params = [];
-            }
+            $params = $match[Constant::PARAMS] ?? [];
 
             // We enrich the request with the controller and params found by the router
             $request = $request
