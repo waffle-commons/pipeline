@@ -8,8 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use RuntimeException;
 use Waffle\Commons\Contracts\Constant\Constant;
+use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundException;
 use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface;
 use Waffle\Commons\Contracts\Routing\RouterInterface;
 
@@ -29,7 +29,9 @@ final readonly class CoreRoutingMiddleware implements MiddlewareInterface
             $match = $this->router->matchRequest(request: $request);
 
             if (null === $match) {
-                throw new RuntimeException('Route not found.');
+                // STAB-02: surface a typed 404 rather than RuntimeException so the
+                // error renderer can map it to HTTP 404 (instead of a generic 500).
+                throw new RouteNotFoundException();
             }
 
             $params = $match[Constant::PARAMS] ?? [];
@@ -42,7 +44,7 @@ final readonly class CoreRoutingMiddleware implements MiddlewareInterface
                 ->withAttribute('_path', $match[Constant::PATH])
                 ->withAttribute('_name', $match[Constant::NAME])
                 ->withAttribute('_params', $params);
-        } catch (RuntimeException|RouteNotFoundExceptionInterface $e) {
+        } catch (RouteNotFoundExceptionInterface $e) {
             // We let the exception bubble up. It will be caught by the ErrorHandler middleware (404).
             throw $e;
         }

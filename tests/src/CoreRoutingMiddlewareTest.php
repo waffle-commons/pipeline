@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
 use Waffle\Commons\Contracts\Constant\Constant;
+use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundException;
 use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface;
 use Waffle\Commons\Contracts\Routing\RouterInterface;
 use Waffle\Commons\Pipeline\CoreRoutingMiddleware;
@@ -151,7 +152,7 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
         $middleware->process($request, $handler);
     }
 
-    public function testItThrowsRuntimeExceptionWhenRouterReturnsNull(): void
+    public function testItThrowsRouteNotFoundExceptionWhenRouterReturnsNull(): void
     {
         $request = $this->createMock(ServerRequestInterface::class);
         $handler = $this->createMock(RequestHandlerInterface::class);
@@ -162,12 +163,33 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
 
         $middleware = new CoreRoutingMiddleware($router);
 
-        $this->expectException(RuntimeException::class);
+        // STAB-02: middleware must surface a typed 404, not a generic 500.
+        $this->expectException(RouteNotFoundException::class);
+        $this->expectExceptionCode(404);
         $this->expectExceptionMessage('Route not found.');
 
         // The handler should never be called if route is missing
         $handler->expects($this->never())->method('handle');
 
         $middleware->process($request, $handler);
+    }
+
+    public function testRouteNotFoundExceptionImplementsContractInterface(): void
+    {
+        // Belt-and-braces: the typed exception MUST still satisfy the marker
+        // interface that downstream renderers/handlers catch on.
+        $request = $this->createMock(ServerRequestInterface::class);
+        $handler = $this->createMock(RequestHandlerInterface::class);
+        $router = $this->createMock(RouterInterface::class);
+        $router->method('matchRequest')->willReturn(null);
+
+        $middleware = new CoreRoutingMiddleware($router);
+
+        try {
+            $middleware->process($request, $handler);
+            static::fail('Expected RouteNotFoundException.');
+        } catch (RouteNotFoundExceptionInterface $caught) {
+            static::assertInstanceOf(RuntimeException::class, $caught);
+        }
     }
 }
