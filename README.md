@@ -9,7 +9,7 @@
 Waffle Pipeline Component
 =========================
 
-> **Release:** `v0.1.0-beta0`
+> **Release:** `v0.1.0-beta1`
 > **PSR Compliance:** PSR-15 (`Psr\Http\Server\MiddlewareInterface`, `RequestHandlerInterface`)
 
 The PSR-15 middleware stack that runs every request through the kernel. The stack locks itself the moment a request enters it, so middleware order cannot be tampered with mid-request.
@@ -26,30 +26,38 @@ composer require waffle-commons/pipeline
 | :--- | :--- |
 | `Waffle\Commons\Pipeline\MiddlewareStack` | `final` registry of middleware (`add`, `prepend`, `getMiddlewares`, `createHandler`). Implements `MiddlewareStackInterface`. |
 | `Waffle\Commons\Pipeline\RequestHandler` | The PSR-15 handler that walks the stack and falls through to a terminal handler. |
-| `Waffle\Commons\Pipeline\CoreRoutingMiddleware` | Routes the request and exposes the resolved controller / route params on the request attributes. |
+| `Waffle\Commons\Pipeline\CoreRoutingMiddleware` | Routes the request and exposes the resolved controller / route params on the request attributes. **Beta-1:** raises the contracts-side `RouteNotFoundException` (instead of a generic `RuntimeException`) when no route matches, so missing routes render as `404` rather than `500`. |
 | `Waffle\Commons\Pipeline\Middleware\TrustedHostMiddleware` | `final readonly` PSR-15 middleware enforcing the configured trusted-host allowlist (RFC-003 §3.2). |
 | `Waffle\Commons\Pipeline\Middleware\SecureHeadersMiddleware` | Adds baseline security response headers (`X-Content-Type-Options`, etc.). |
 
-## 🚀 Building a stack
+## 🚀 Building a stack (Beta-1 canonical order)
 
 ```php
 use Waffle\Commons\Pipeline\MiddlewareStack;
-use Waffle\Commons\Pipeline\Middleware\TrustedHostMiddleware;
+use Waffle\Commons\Pipeline\CoreRoutingMiddleware;
 use Waffle\Commons\Pipeline\Middleware\SecureHeadersMiddleware;
+use Waffle\Commons\Pipeline\Middleware\TrustedHostMiddleware;
+use Waffle\Commons\Security\Middleware\AnonymousSessionMiddleware;
+use Waffle\Commons\Security\Middleware\CsrfMiddleware;
+use Waffle\Commons\Security\Middleware\SecurityMiddleware;
 
 $stack = new MiddlewareStack();
 
 $stack
-    ->add(new ErrorHandlerMiddleware($renderer, $logger))         // outermost
+    ->add(new ErrorHandlerMiddleware($renderer, $logger))            // 1. outermost (catches everything)
     ->add(new TrustedHostMiddleware(['example.com', 'api.example.com']))
-    ->add(new SecureHeadersMiddleware())
-    ->add(new CoreRoutingMiddleware($router))
-    ->add(new SecurityMiddleware($security))                       // innermost
+    ->add(new AnonymousSessionMiddleware())                          // 3. issues WAFFLE_SID + _anon_sid attr
+    ->add(new CoreRoutingMiddleware($router))                        // 4. resolves _classname / _method
+    ->add(new CsrfMiddleware($csrfTokenManager))                     // 5. validates #[RequiresCsrfToken] using _anon_sid
+    ->add(new SecurityMiddleware($secureContainer, $logger))         // 6. fail-closed ABAC analysis
+    ->add(new SecureHeadersMiddleware())                             // 7. innermost — defensive response headers
 ;
 
 $handler = $stack->createHandler($controllerDispatcher);
 $response = $handler->handle($serverRequest);
 ```
+
+`AnonymousSessionMiddleware` must run before `CsrfMiddleware` — the CSRF HMAC binds to the SID it publishes. `CoreRoutingMiddleware` must run before both Csrf and Security — both read `_classname`/`_method` from its request attributes.
 
 After `createHandler()`, the stack is locked. Further `add()` / `prepend()` calls raise `RuntimeException('MiddlewareStack is locked and cannot be modified during request processing.')`.
 
