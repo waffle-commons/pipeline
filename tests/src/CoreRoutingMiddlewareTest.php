@@ -9,9 +9,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
-use Waffle\Commons\Contracts\Constant\Constant;
 use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundException;
 use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface;
+use Waffle\Commons\Contracts\Routing\MatchedRoute;
 use Waffle\Commons\Contracts\Routing\RouterInterface;
 use Waffle\Commons\Pipeline\CoreRoutingMiddleware;
 
@@ -20,15 +20,15 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
 {
     public function testItMatchesRouteAndEnrichesRequest(): void
     {
-        // 1. Setup Data
-        $routeMatch = [
-            Constant::CLASSNAME => 'TestController',
-            Constant::METHOD => 'success',
-            Constant::ARGUMENTS => ['id' => 123],
-            Constant::PATH => '/path_to_route',
-            Constant::NAME => 'home',
-            Constant::PARAMS => ['int' => 123],
-        ];
+        // 1. Setup Data — MatchedRoute is now the producer-side contract.
+        $routeMatch = new MatchedRoute(
+            className: 'TestController',
+            method: 'success',
+            arguments: ['id' => 123],
+            path: '/path_to_route',
+            name: 'home',
+            params: ['int' => 123],
+        );
 
         // 2. Create Request Mock FIRST (We must use this exact instance everywhere)
         $request = $this->createMock(ServerRequestInterface::class);
@@ -49,33 +49,17 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
         $request
             ->expects($this->once())
             ->method('withAttribute')
-            ->with('_classname', $routeMatch[Constant::CLASSNAME])
+            ->with('_classname', $routeMatch->className)
             ->willReturn($req1);
-        $req1
-            ->expects($this->once())
-            ->method('withAttribute')
-            ->with('_method', $routeMatch[Constant::METHOD])
-            ->willReturn($req2);
+        $req1->expects($this->once())->method('withAttribute')->with('_method', $routeMatch->method)->willReturn($req2);
         $req2
             ->expects($this->once())
             ->method('withAttribute')
-            ->with('_arguments', $routeMatch[Constant::ARGUMENTS])
+            ->with('_arguments', $routeMatch->arguments)
             ->willReturn($req3);
-        $req3
-            ->expects($this->once())
-            ->method('withAttribute')
-            ->with('_path', $routeMatch[Constant::PATH])
-            ->willReturn($req4);
-        $req4
-            ->expects($this->once())
-            ->method('withAttribute')
-            ->with('_name', $routeMatch[Constant::NAME])
-            ->willReturn($req5);
-        $req5
-            ->expects($this->once())
-            ->method('withAttribute')
-            ->with('_params', $routeMatch[Constant::PARAMS])
-            ->willReturn($req6);
+        $req3->expects($this->once())->method('withAttribute')->with('_path', $routeMatch->path)->willReturn($req4);
+        $req4->expects($this->once())->method('withAttribute')->with('_name', $routeMatch->name)->willReturn($req5);
+        $req5->expects($this->once())->method('withAttribute')->with('_params', $routeMatch->params)->willReturn($req6);
 
         // 5. Configure Handler to receive the final enriched request
         $handler = $this->createMock(RequestHandlerInterface::class);
@@ -90,15 +74,16 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
 
     public function testItHandlesRouteWithoutOptionalParams(): void
     {
-        // 1. Setup
-        $routeMatch = [
-            Constant::CLASSNAME => 'TestController',
-            Constant::METHOD => 'index',
-            Constant::ARGUMENTS => [],
-            Constant::PATH => '/',
-            Constant::NAME => 'home',
-            Constant::PARAMS => null,
-        ];
+        // 1. Setup — empty params (default) replaces the previous "params=null" idiom;
+        //    MatchedRoute::$params is non-nullable (default []), enforcing the invariant
+        //    at the type-system level instead of at runtime.
+        $routeMatch = new MatchedRoute(
+            className: 'TestController',
+            method: 'index',
+            arguments: [],
+            path: '/',
+            name: 'home',
+        );
 
         $router = $this->createMock(RouterInterface::class);
         $router->method('matchRequest')->willReturn($routeMatch);
@@ -121,8 +106,7 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
         $req3->method('withAttribute')->willReturn($req4);
         $req4->method('withAttribute')->willReturn($req5);
 
-        // 3. Assertion: Ensure 'params' attribute is set to empty array []
-        // This is the critical check for this test
+        // 3. Assertion: Ensure 'params' attribute is set to the empty array (DTO default)
         $req5->expects($this->once())->method('withAttribute')->with('_params', [])->willReturn($req6);
 
         $handler = $this->createMock(RequestHandlerInterface::class);
