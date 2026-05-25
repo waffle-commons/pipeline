@@ -8,8 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use RuntimeException;
-use Waffle\Commons\Contracts\Constant\Constant;
+use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundException;
 use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface;
 use Waffle\Commons\Contracts\Routing\RouterInterface;
 
@@ -28,21 +27,24 @@ final readonly class CoreRoutingMiddleware implements MiddlewareInterface
         try {
             $match = $this->router->matchRequest(request: $request);
 
-            if (null === $match) {
-                throw new RuntimeException('Route not found.');
+            if ($match === null) {
+                // STAB-02: surface a typed 404 rather than RuntimeException so the
+                // error renderer can map it to HTTP 404 (instead of a generic 500).
+                throw new RouteNotFoundException();
             }
 
-            $params = $match[Constant::PARAMS] ?? [];
-
-            // We enrich the request with the controller and params found by the router
+            // We enrich the request with the controller and params found by the router.
+            // Attribute names (`_classname`, `_method`, ...) remain stable PSR-7 keys —
+            // the only thing that changed is the producer-side shape (MatchedRoute DTO
+            // instead of a nested associative array).
             $request = $request
-                ->withAttribute('_classname', $match[Constant::CLASSNAME])
-                ->withAttribute('_method', $match[Constant::METHOD])
-                ->withAttribute('_arguments', $match[Constant::ARGUMENTS])
-                ->withAttribute('_path', $match[Constant::PATH])
-                ->withAttribute('_name', $match[Constant::NAME])
-                ->withAttribute('_params', $params);
-        } catch (RuntimeException|RouteNotFoundExceptionInterface $e) {
+                ->withAttribute('_classname', $match->className)
+                ->withAttribute('_method', $match->method)
+                ->withAttribute('_arguments', $match->arguments)
+                ->withAttribute('_path', $match->path)
+                ->withAttribute('_name', $match->name)
+                ->withAttribute('_params', $match->params);
+        } catch (RouteNotFoundExceptionInterface $e) {
             // We let the exception bubble up. It will be caught by the ErrorHandler middleware (404).
             throw $e;
         }
