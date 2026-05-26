@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Waffle\Commons\Contracts\Routing\Exception\MethodNotAllowedExceptionInterface;
 use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundException;
 use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface;
 use Waffle\Commons\Contracts\Routing\RouterInterface;
@@ -44,8 +45,8 @@ final readonly class CoreRoutingMiddleware implements MiddlewareInterface
                 ->withAttribute('_path', $match->path)
                 ->withAttribute('_name', $match->name)
                 ->withAttribute('_params', $match->params);
-        } catch (RouteNotFoundExceptionInterface $e) {
-            // We let the exception bubble up. It will be caught by the ErrorHandler middleware (404).
+        } catch (RouteNotFoundExceptionInterface|MethodNotAllowedExceptionInterface $e) {
+            // Let the routing exceptions bubble up naturally to ErrorHandlerMiddleware (404 and 405)
             throw $e;
         }
 
