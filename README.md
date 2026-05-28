@@ -26,7 +26,7 @@ composer require waffle-commons/pipeline
 | :--- | :--- |
 | `Waffle\Commons\Pipeline\MiddlewareStack` | `final` registry of middleware (`add`, `prepend`, `getMiddlewares`, `createHandler`). Implements `MiddlewareStackInterface`. |
 | `Waffle\Commons\Pipeline\RequestHandler` | The PSR-15 handler that walks the stack and falls through to a terminal handler. |
-| `Waffle\Commons\Pipeline\CoreRoutingMiddleware` | Routes the request and exposes the resolved controller / route params on the request attributes. **Beta-1:** raises the contracts-side `RouteNotFoundException` (instead of a generic `RuntimeException`) when no route matches, so missing routes render as `404` rather than `500`. |
+| `Waffle\Commons\Pipeline\CoreRoutingMiddleware` | Routes the request and exposes the resolved controller / route params on the request attributes. **Beta-1:** raises the contracts-side `RouteNotFoundException` (instead of a generic `RuntimeException`) when no route matches, so missing routes render as `404` rather than `500`. Accepts an optional PSR-17 `ResponseFactoryInterface` — when supplied, an `OPTIONS` request to a known path is auto-answered `204` + `Allow`. |
 | `Waffle\Commons\Pipeline\Middleware\TrustedHostMiddleware` | `final readonly` PSR-15 middleware enforcing the configured trusted-host allowlist (RFC-003 §3.2). |
 | `Waffle\Commons\Pipeline\Middleware\SecureHeadersMiddleware` | Adds baseline security response headers (`X-Content-Type-Options`, etc.). |
 
@@ -47,7 +47,7 @@ $stack
     ->add(new ErrorHandlerMiddleware($renderer, $logger))            // 1. outermost (catches everything)
     ->add(new TrustedHostMiddleware(['example.com', 'api.example.com']))
     ->add(new AnonymousSessionMiddleware())                          // 3. issues WAFFLE_SID + _anon_sid attr
-    ->add(new CoreRoutingMiddleware($router))                        // 4. resolves _classname / _method
+    ->add(new CoreRoutingMiddleware($router, $responseFactory))      // 4. resolves _classname / _method; auto-answers OPTIONS
     ->add(new CsrfMiddleware($csrfTokenManager))                     // 5. validates #[RequiresCsrfToken] using _anon_sid
     ->add(new SecurityMiddleware($secureContainer, $logger))         // 6. fail-closed ABAC analysis
     ->add(new SecureHeadersMiddleware())                             // 7. innermost — defensive response headers

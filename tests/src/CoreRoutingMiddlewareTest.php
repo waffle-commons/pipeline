@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace WaffleTests\Commons\Pipeline;
 
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use RuntimeException;
+use Waffle\Commons\Contracts\Routing\Exception\MethodNotAllowedException;
+use Waffle\Commons\Contracts\Routing\Exception\MethodNotAllowedExceptionInterface;
 use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundException;
 use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundExceptionInterface;
 use Waffle\Commons\Contracts\Routing\MatchedRoute;
@@ -175,5 +178,78 @@ final class CoreRoutingMiddlewareTest extends AbstractTestCase
         } catch (RouteNotFoundExceptionInterface $caught) {
             static::assertInstanceOf(RuntimeException::class, $caught);
         }
+    }
+
+    public function testOptionsRequestIsAnsweredWith204AndAllowHeaderWhenFactoryProvided(): void
+    {
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getMethod')->willReturn('OPTIONS');
+
+        // The OPTIONS preflight short-circuits: the inner handler must never run.
+        $handler = $this->createMock(RequestHandlerInterface::class);
+        $handler->expects($this->never())->method('handle');
+
+        // The router reports the path exists but the method is not allowed; the exception
+        // already carries the merged, augmented, alphabetically-sorted Allow list.
+        $router = $this->createMock(RouterInterface::class);
+        $router
+            ->expects($this->once())
+            ->method('matchRequest')
+            ->willThrowException(new MethodNotAllowedException(['GET', 'HEAD', 'OPTIONS']));
+
+        $optionsResponse = $this->createMock(ResponseInterface::class);
+        $optionsResponse
+            ->expects($this->once())
+            ->method('withHeader')
+            ->with('Allow', 'GET, HEAD, OPTIONS')
+            ->willReturnSelf();
+
+        $factory = $this->createMock(ResponseFactoryInterface::class);
+        $factory->expects($this->once())->method('createResponse')->with(204)->willReturn($optionsResponse);
+
+        $middleware = new CoreRoutingMiddleware($router, $factory);
+
+        static::assertSame($optionsResponse, $middleware->process($request, $handler));
+    }
+
+    public function testOptionsRequestBubbles405WhenNoResponseFactoryWired(): void
+    {
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getMethod')->willReturn('OPTIONS');
+
+        $router = $this->createMock(RouterInterface::class);
+        $router
+            ->expects($this->once())
+            ->method('matchRequest')
+            ->willThrowException(new MethodNotAllowedException(['GET']));
+
+        // No factory wired: OPTIONS cannot be auto-answered, so the 405 must propagate.
+        $middleware = new CoreRoutingMiddleware($router);
+
+        $this->expectException(MethodNotAllowedExceptionInterface::class);
+
+        $middleware->process($request, $this->createStub(RequestHandlerInterface::class));
+    }
+
+    public function testMethodNotAllowedBubblesForNonOptionsEvenWithFactory(): void
+    {
+        $request = $this->createStub(ServerRequestInterface::class);
+        $request->method('getMethod')->willReturn('PUT');
+
+        $router = $this->createMock(RouterInterface::class);
+        $router
+            ->expects($this->once())
+            ->method('matchRequest')
+            ->willThrowException(new MethodNotAllowedException(['GET', 'OPTIONS']));
+
+        // A genuine (non-OPTIONS) method mismatch must never be converted to a 204.
+        $factory = $this->createMock(ResponseFactoryInterface::class);
+        $factory->expects($this->never())->method('createResponse');
+
+        $middleware = new CoreRoutingMiddleware($router, $factory);
+
+        $this->expectException(MethodNotAllowedExceptionInterface::class);
+
+        $middleware->process($request, $this->createStub(RequestHandlerInterface::class));
     }
 }
