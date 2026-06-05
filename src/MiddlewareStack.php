@@ -28,6 +28,7 @@ final class MiddlewareStack implements MiddlewareStackInterface
     public function add(MiddlewareInterface $middleware): static
     {
         $this->ensureUnlocked();
+        // @igor-ignore: boot-time pipeline assembly; the locked latch (see createHandler) forbids request-time mutation, so this never leaks across requests.
         $this->middlewares[] = $middleware;
 
         return $this;
@@ -48,6 +49,7 @@ final class MiddlewareStack implements MiddlewareStackInterface
 
     public function createHandler(RequestHandlerInterface $fallbackHandler): RequestHandlerInterface
     {
+        // @igor-ignore: idempotent latch flipped on first handler build; freezes the boot-time stack, it is not per-request state.
         $this->locked = true;
 
         return new RequestHandler($this->middlewares, $fallbackHandler);
