@@ -10,7 +10,7 @@
 Waffle Pipeline Component
 =========================
 
-> **Release:** `v0.1.0-beta2` &nbsp;|&nbsp; [`CHANGELOG.md`](./CHANGELOG.md)
+> **Release:** `0.1.0-beta3` &nbsp;|&nbsp; [`CHANGELOG.md`](./CHANGELOG.md)
 > **PSR Compliance:** PSR-15 (`Psr\Http\Server\MiddlewareInterface`, `RequestHandlerInterface`), PSR-17 (response factory, optional for `OPTIONS` auto-answer)
 
 The PSR-15 middleware stack that runs every request through the kernel. The stack locks itself the moment a request enters it, so middleware order cannot be tampered with mid-request.
