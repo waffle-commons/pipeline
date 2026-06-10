@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b6a23855765d69f475be9d2cb598ccdb",
+    "content-hash": "f4bfb75c56e02ad2ce09347cefbf3449",
     "packages": [
         {
             "name": "psr/cache",
@@ -2183,16 +2183,16 @@
         },
         {
             "name": "igor-php/igor-php",
-            "version": "v0.6.3",
+            "version": "v0.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/igor-php/igor-php.git",
-                "reference": "9aecff9843f27eb9adb674172abfae7b2d18d295"
+                "reference": "c22297f5916f47d9f35c20f14f9ea536d9315880"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/igor-php/igor-php/zipball/9aecff9843f27eb9adb674172abfae7b2d18d295",
-                "reference": "9aecff9843f27eb9adb674172abfae7b2d18d295",
+                "url": "https://api.github.com/repos/igor-php/igor-php/zipball/c22297f5916f47d9f35c20f14f9ea536d9315880",
+                "reference": "c22297f5916f47d9f35c20f14f9ea536d9315880",
                 "shasum": ""
             },
             "require": {
@@ -2227,9 +2227,9 @@
             ],
             "support": {
                 "issues": "https://github.com/igor-php/igor-php/issues",
-                "source": "https://github.com/igor-php/igor-php/tree/v0.6.3"
+                "source": "https://github.com/igor-php/igor-php/tree/v0.7.0"
             },
-            "time": "2026-05-26T20:17:14+00:00"
+            "time": "2026-06-08T12:30:49+00:00"
         },
         {
             "name": "kelunik/certificate",
