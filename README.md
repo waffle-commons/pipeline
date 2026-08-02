@@ -109,6 +109,13 @@ Contract-first, component-agnostic by construction: components compose through `
 docker exec -w /waffle-commons/pipeline waffle-dev composer tests
 ```
 
+## 📚 Documentation
+
+Central framework docs live in the [waffle-commons/documentation](https://github.com/waffle-commons/documentation) repository:
+
+- Reference: [pipeline](https://github.com/waffle-commons/documentation/blob/main/reference/pipeline.md)
+- Explanation: [Request lifecycle](https://github.com/waffle-commons/documentation/blob/main/explanation/lifecycle.md)
+
 ## 📄 License
 
 MIT — see [LICENSE.md](./LICENSE.md).
