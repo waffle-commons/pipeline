@@ -1,6 +1,6 @@
 {
     "name": "waffle-commons/pipeline",
-    "description": "Pipeline component for Waffle framework.",
+    "description": "PSR-15 middleware pipeline for Waffle Commons: an ordered, boot-frozen stack with automatic OPTIONS answering and no per-request mutation.",
     "type": "library",
     "license": "MIT",
     "autoload": {
