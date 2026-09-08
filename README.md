@@ -10,7 +10,7 @@
 Waffle Pipeline Component
 =========================
 
-> **Release:** `0.1.0-beta5` &nbsp;|&nbsp; [`CHANGELOG.md`](./CHANGELOG.md)
+> **Release:** `0.1.0-beta6` &nbsp;|&nbsp; [`CHANGELOG.md`](./CHANGELOG.md)
 > **PSR Compliance:** PSR-15 (`Psr\Http\Server\MiddlewareInterface`, `RequestHandlerInterface`), PSR-17 (response factory, optional for `OPTIONS` auto-answer)
 
 The PSR-15 middleware stack that runs every request through the kernel. The stack locks itself the moment a request enters it, so middleware order cannot be tampered with mid-request.
@@ -108,6 +108,13 @@ Contract-first, component-agnostic by construction: components compose through `
 ```bash
 docker exec -w /waffle-commons/pipeline waffle-dev composer tests
 ```
+
+## 📚 Documentation
+
+Central framework docs live in the [waffle-commons/documentation](https://github.com/waffle-commons/documentation) repository:
+
+- Reference: [pipeline](https://github.com/waffle-commons/documentation/blob/main/reference/pipeline.md)
+- Explanation: [Request lifecycle](https://github.com/waffle-commons/documentation/blob/main/explanation/lifecycle.md)
 
 ## 📄 License
 
