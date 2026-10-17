@@ -5,6 +5,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Released in lockstep with the Waffle Commons umbrella tag.
 
+## [Unreleased]
+
+### Added
+- **Orchestrator probes (OPS-01, RFC-023).** `Middleware\ProbeMiddleware` serves `/healthz` (liveness: 200 while the worker can serve a request; it never checks a dependency) and `/readyz` (readiness: 200 when ready, 503 otherwise), with a minimal public body. The per-probe report goes only to the bearer token or an allow-listed `REMOTE_ADDR`, the access rule of `/waffle-metrics`. Mount it before `TrustedHostMiddleware`: kubelet probes carry the pod IP as `Host` (RFC-023 §5.2).
+- `Health\ReadinessProbe` runs the registered `HealthCheckInterface` probes fail-closed: a required name with no probe, or a critical probe down, means not ready; a probe listed in `waffle.health.required` counts as critical; a probe that throws counts as down. It times every probe and exports `waffle_health_check_duration_seconds` and `waffle_health_check_up` (RFC-023 §5.4). Two probes with the same name are refused at construction.
+
+### Dependencies
+- `psr/http-factory` and `psr/http-message` are direct requirements; `nyholm/psr7` is a development dependency for the component's own tests.
+
 ## [0.1.0-beta6] — 2026-09
 
 **Theme: documentation.**
