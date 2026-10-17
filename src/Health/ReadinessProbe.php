@@ -16,6 +16,11 @@ use Waffle\Commons\Contracts\Telemetry\Metrics\MetricsRegistryInterface;
  * Each probe is timed here, not by the probe itself, and the durations go to `/waffle-metrics`
  * (RFC-023 §5.4). A probe listed in `waffle.health.required` counts as critical, and a required name with
  * no probe makes the instance not ready. Nothing is cached between two calls: every `/readyz` asks again.
+ *
+ * Graceful shutdown (RFC-023 §5.1): the pod's `preStop` hook creates the drain marker, then sleeps while
+ * Kubernetes stops routing to it. As long as the marker exists the instance reports not ready without
+ * running any probe, while PHP keeps serving every other request; SIGTERM then follows and Caddy's
+ * `grace_period` drains what is in flight.
  */
 final readonly class ReadinessProbe
 {
@@ -25,7 +30,9 @@ final readonly class ReadinessProbe
 
     /**
      * @param list<HealthCheckInterface> $checks   The registered probes; their names must be unique.
-     * @param list<string>               $required The names in `waffle.health.required`.
+     * @param list<string>               $required    The names in `waffle.health.required`.
+     * @param string|null                $drainMarker The file whose presence means "draining"
+     *                                                (`waffle.health.drain_marker`); null disables it.
      *
      * @throws InvalidArgumentException When two probes share a name.
      */
@@ -33,6 +40,7 @@ final readonly class ReadinessProbe
         private array $checks = [],
         private array $required = [],
         private ?MetricsRegistryInterface $metrics = null,
+        private ?string $drainMarker = null,
     ) {
         $seen = [];
         foreach ($checks as $check) {
@@ -47,6 +55,10 @@ final readonly class ReadinessProbe
 
     public function run(): ReadinessReport
     {
+        if ($this->drainMarker !== null && is_file($this->drainMarker)) {
+            return new ReadinessReport([], [], draining: true);
+        }
+
         $outcomes = [];
         $registered = [];
 

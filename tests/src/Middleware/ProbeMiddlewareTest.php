@@ -72,6 +72,7 @@ final class ProbeMiddlewareTest extends AbstractTestCase
         static::assertIsArray($report);
         static::assertSame('unavailable', $report['status']);
         static::assertSame(['redis'], $report['missing']);
+        static::assertFalse($report['draining']);
         static::assertIsArray($report['checks']);
         static::assertIsArray($report['checks']['db.pool']);
         static::assertSame('down', $report['checks']['db.pool']['status']);

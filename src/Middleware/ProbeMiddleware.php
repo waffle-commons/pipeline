@@ -25,7 +25,8 @@ use Waffle\Commons\Pipeline\Health\ReadinessReport;
  *   `REMOTE_ADDR`, the access rule of `/waffle-metrics`.
  *
  * Mount it before `TrustedHostMiddleware` (RFC-023 §5.2): kubelet probes carry the pod IP as `Host`. During
- * a shutdown, Caddy answers `/readyz` with 503 itself, before PHP is reached (RFC-023 §5.1).
+ * a shutdown, the drain marker makes `/readyz` answer 503 while every other path is still served
+ * (RFC-023 §5.1).
  */
 final readonly class ProbeMiddleware implements MiddlewareInterface
 {
@@ -86,7 +87,12 @@ final readonly class ProbeMiddleware implements MiddlewareInterface
         }
 
         $json = json_encode(
-            ['status' => $ready ? 'ok' : 'unavailable', 'checks' => $checks, 'missing' => $report->missing],
+            [
+                'status' => $ready ? 'ok' : 'unavailable',
+                'draining' => $report->draining,
+                'checks' => $checks,
+                'missing' => $report->missing,
+            ],
             JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE | JSON_PRESERVE_ZERO_FRACTION,
         );
 

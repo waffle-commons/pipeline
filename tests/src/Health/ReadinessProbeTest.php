@@ -122,6 +122,30 @@ final class ReadinessProbeTest extends AbstractTestCase
         return $outcome;
     }
 
+    public function testTheDrainMarkerMakesTheInstanceNotReadyWithoutProbing(): void
+    {
+        $marker = dirname(__DIR__, 3) . '/var/drain-' . bin2hex(random_bytes(4));
+        $probe = new ReadinessProbe(
+            [new StubHealthCheck('redis', HealthResult::up(), throws: true)],
+            ['redis'],
+            null,
+            $marker,
+        );
+
+        static::assertFalse($probe->run()->draining);
+
+        touch($marker);
+        try {
+            $report = $probe->run();
+        } finally {
+            unlink($marker);
+        }
+
+        static::assertTrue($report->draining);
+        static::assertFalse($report->isReady());
+        static::assertSame([], $report->outcomes);
+    }
+
     public function testRefusesTwoProbesWithTheSameName(): void
     {
         $this->expectException(InvalidArgumentException::class);
