@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
+use Waffle\Commons\Contracts\Constant\Constant;
 use Waffle\Commons\Contracts\Routing\Exception\MethodNotAllowedExceptionInterface;
 use Waffle\Commons\Contracts\Routing\Exception\RouteNotFoundException;
 use Waffle\Commons\Contracts\Routing\RouterInterface;
@@ -70,7 +71,7 @@ final readonly class CoreRoutingMiddleware implements MiddlewareInterface
             ->withAttribute('_arguments', $match->arguments)
             ->withAttribute('_path', $match->path)
             ->withAttribute('_name', $match->name)
-            ->withAttribute('_params', $match->params);
+            ->withAttribute(Constant::ATTR_PARAMS, $match->params);
 
         return $handler->handle($request);
     }
