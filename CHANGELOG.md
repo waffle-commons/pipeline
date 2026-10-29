@@ -5,7 +5,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Released in lockstep with the Waffle Commons umbrella tag.
 
-## [Unreleased]
+## [0.1.0-beta7] — 2026-11
+
+**Theme: orchestrator probes and graceful shutdown (OPS-01/02).**
 
 ### Added
 - **Orchestrator probes (OPS-01, RFC-023).** `Middleware\ProbeMiddleware` serves `/healthz` (liveness: 200 while the worker can serve a request; it never checks a dependency) and `/readyz` (readiness: 200 when ready, 503 otherwise), with a minimal public body. The per-probe report goes only to the bearer token or an allow-listed `REMOTE_ADDR`, the access rule of `/waffle-metrics`. Mount it before `TrustedHostMiddleware`: kubelet probes carry the pod IP as `Host` (RFC-023 §5.2).
