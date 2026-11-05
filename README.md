@@ -10,10 +10,18 @@
 Waffle Pipeline Component
 =========================
 
-> **Release:** `0.1.0-beta6` &nbsp;|&nbsp; [`CHANGELOG.md`](./CHANGELOG.md)
+> **Release:** `0.1.0-beta7` &nbsp;|&nbsp; [`CHANGELOG.md`](./CHANGELOG.md)
 > **PSR Compliance:** PSR-15 (`Psr\Http\Server\MiddlewareInterface`, `RequestHandlerInterface`), PSR-17 (response factory, optional for `OPTIONS` auto-answer)
 
 The PSR-15 middleware stack that runs every request through the kernel. The stack locks itself the moment a request enters it, so middleware order cannot be tampered with mid-request.
+
+## 🆕 Beta-7 — orchestrator probes and graceful shutdown (OPS-01, OPS-02)
+
+- **`Middleware\ProbeMiddleware`** serves `/healthz` (liveness: `200` while the worker can serve a request; it never checks a dependency) and `/readyz` (readiness: `200` when ready, `503` otherwise), with a minimal public body. The per-probe report goes only to the bearer token or an allow-listed `REMOTE_ADDR`, the access rule of `/waffle-metrics`. Mount it before `TrustedHostMiddleware`: kubelet probes carry the pod IP as `Host`.
+- **`Health\ReadinessProbe`** runs the registered `HealthCheckInterface` probes fail-closed: a required name with no probe, or a critical probe down, means not ready; `waffle.health.required` makes a probe critical; a probe that throws counts as down. It times every probe and exports `waffle_health_check_duration_seconds` and `waffle_health_check_up`.
+- **Graceful shutdown.** While the drain marker (`waffle.health.drain_marker`) exists, `/readyz` answers `503` without running any probe, and every other path is still served. The pod's `preStop` hook creates it and waits for the load balancer to stop routing before SIGTERM.
+
+How-to: [Run on Kubernetes](https://github.com/waffle-commons/documentation/blob/main/how-to/run-on-kubernetes.md).
 
 ## 📦 Installation
 
@@ -30,6 +38,8 @@ composer require waffle-commons/pipeline
 | `Waffle\Commons\Pipeline\CoreRoutingMiddleware` | Routes the request and exposes the resolved controller / route params on the request attributes. **Beta-1:** raises the contracts-side `RouteNotFoundException` (instead of a generic `RuntimeException`) when no route matches, so missing routes render as `404` rather than `500`. Accepts an optional PSR-17 `ResponseFactoryInterface` — when supplied, an `OPTIONS` request to a known path is auto-answered `204` + `Allow`. |
 | `Waffle\Commons\Pipeline\Middleware\TrustedHostMiddleware` | `final readonly` PSR-15 middleware enforcing the configured trusted-host allowlist (RFC-003 §3.2). |
 | `Waffle\Commons\Pipeline\Middleware\SecureHeadersMiddleware` | Adds baseline security response headers (`X-Content-Type-Options`, etc.). |
+| `Waffle\Commons\Pipeline\Middleware\ProbeMiddleware` | `/healthz` (liveness) and `/readyz` (readiness) for orchestrators (*Beta-7*, OPS-01). |
+| `Waffle\Commons\Pipeline\Health\ReadinessProbe` | Runs the `HealthCheckInterface` probes fail-closed, honours the drain marker, exports the probe metrics (*Beta-7*, OPS-01/02). |
 
 ## 🚀 Building a stack (Beta-1 canonical order)
 
@@ -114,6 +124,7 @@ docker exec -w /waffle-commons/pipeline waffle-dev composer tests
 Central framework docs live in the [waffle-commons/documentation](https://github.com/waffle-commons/documentation) repository:
 
 - Reference: [pipeline](https://github.com/waffle-commons/documentation/blob/main/reference/pipeline.md)
+- How-to: [Run on Kubernetes](https://github.com/waffle-commons/documentation/blob/main/how-to/run-on-kubernetes.md)
 - Explanation: [Request lifecycle](https://github.com/waffle-commons/documentation/blob/main/explanation/lifecycle.md)
 
 ## 📄 License

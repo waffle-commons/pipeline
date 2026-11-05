@@ -5,6 +5,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Released in lockstep with the Waffle Commons umbrella tag.
 
+## [0.1.0-beta7] — 2026-11
+
+**Theme: orchestrator probes and graceful shutdown (OPS-01/02).**
+
+### Added
+- **Orchestrator probes (OPS-01, RFC-023).** `Middleware\ProbeMiddleware` serves `/healthz` (liveness: 200 while the worker can serve a request; it never checks a dependency) and `/readyz` (readiness: 200 when ready, 503 otherwise), with a minimal public body. The per-probe report goes only to the bearer token or an allow-listed `REMOTE_ADDR`, the access rule of `/waffle-metrics`. Mount it before `TrustedHostMiddleware`: kubelet probes carry the pod IP as `Host` (RFC-023 §5.2).
+- `Health\ReadinessProbe` runs the registered `HealthCheckInterface` probes fail-closed: a required name with no probe, or a critical probe down, means not ready; a probe listed in `waffle.health.required` counts as critical; a probe that throws counts as down. It times every probe and exports `waffle_health_check_duration_seconds` and `waffle_health_check_up` (RFC-023 §5.4). Two probes with the same name are refused at construction.
+- **Graceful shutdown (OPS-02, RFC-023 §5.1).** `ReadinessProbe` takes an optional drain marker (`waffle.health.drain_marker`): while that file exists, `/readyz` answers 503 without running any probe and the detailed report says `"draining": true`, while every other path is still served. The pod's `preStop` hook creates it and sleeps until Kubernetes stops routing; SIGTERM then follows and Caddy's `grace_period` drains the requests in flight. (Caddy's `shutdown_delay` was rejected at first because FrankenPHP 1.12.7 stopped PHP at SIGTERM, so every request during the delay got a 500. FrankenPHP 1.13.1 fixed that, and the skeleton now adds `shutdown_delay` as a second path for runtimes without a `preStop` hook, RFC-023 §5.1.)
+
+### Changed
+- `CoreRoutingMiddleware` sets the route-params attribute through `Constant::ATTR_PARAMS` (from `waffle-commons/contracts` 0.1.0-beta7). The name is still `_params` (CARRY-06).
+
+### Dependencies
+- `psr/http-factory` and `psr/http-message` are direct requirements; `nyholm/psr7` is a development dependency for the component's own tests.
+
 ## [0.1.0-beta6] — 2026-09
 
 **Theme: documentation.**
