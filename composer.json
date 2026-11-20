@@ -21,7 +21,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": "^8.5",
+        "php": "^8.5.12",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
         "waffle-commons/contracts": "self.version",
